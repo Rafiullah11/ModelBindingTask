@@ -1,26 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using ModelBindingTask.Models;
 
 namespace ModelBindingTask.Controllers
 {
-    //Sir please visit Api Controller for Route Method i implement all method in api controller is also
-    public class HomeController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ApiController : ControllerBase
     {
         private readonly AppDbContext _context;
 
-        public HomeController(AppDbContext context)
+        public ApiController(AppDbContext context)
         {
             _context = context;
-        }
-        public IActionResult Index()
-        {
-            return View();
-        }
-
-        public IActionResult FromForm()
-        {
-            return View();
         }
 
         [HttpPost]
@@ -33,7 +25,8 @@ namespace ModelBindingTask.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(customer);
+            return Ok(customer);
+
         }
 
         [HttpPost]
@@ -44,7 +37,7 @@ namespace ModelBindingTask.Controllers
 
             if (ModelState.IsValid)
             {
-                message =  " Customer id " + model.Id + "First Name" + model.FirstName + " Last Name " + model.LastName + " Age " + model.Age;
+                message = " Customer id " + model.Id + "First Name" + model.FirstName + " Last Name " + model.LastName + " Age " + model.Age;
             }
             else
             {
@@ -60,7 +53,7 @@ namespace ModelBindingTask.Controllers
 
             if (ModelState.IsValid)
             {
-                message = "FromQuery "  + " Customer id " + model.Id + "First Name" + model.FirstName + " Last Name " + model.LastName + " Age " + model.Age;
+                message = "FromQuery " + " Customer id " + model.Id + "First Name" + model.FirstName + " Last Name " + model.LastName + " Age " + model.Age;
 
             }
             else
@@ -78,13 +71,14 @@ namespace ModelBindingTask.Controllers
             customer.LastName = lastname;
             customer.Age = age;
 
-            return View(customer);
+            return Ok(customer);
+
         }
 
         [HttpPost]
         public IActionResult Post([FromBody] Customer customer)
         {
-            return View(customer);
+            return Ok(customer);
         }
     }
 
